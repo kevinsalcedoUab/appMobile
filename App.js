@@ -7,16 +7,24 @@ import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import MapViewDirections from 'react-native-maps-directions';
 import { Directions } from 'react-native-gesture-handler';
 import { set } from 'react-native-reanimated';
+
 /**
  * Component for home Screen
  */
-function HomeScreen({navigation}) {
+function HomeScreen({route, navigation}) {
+  const {NAME, FIRSTNAME, LASTNAME, EMAIL, AGE, PHONE} = route.params;
+  console.log('Success Login for: ' + NAME + ' email: ' + EMAIL);
+
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Text>Home Screen</Text>
       <Button
       title="Go to Maps"
       onPress={() => navigation.navigate('MapOrigin')}
+      />
+      <Button
+      title="Go to Register"
+      onPress={() => navigation.navigate('Register')}
       />
       <Button
       title="Go to Login"
@@ -27,9 +35,27 @@ function HomeScreen({navigation}) {
 }
 
 /**
- * Component for login
+ * Component for prueba Screen
  */
-function LoginScreen() {
+function pruebaScreen({route, navigation}) {
+  const {NAME, FIRSTNAME, LASTNAME, EMAIL, AGE, PHONE} = route.params;
+  return (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text>{NAME}</Text>
+      <Text>{FIRSTNAME}</Text>
+      <Text>{LASTNAME}</Text>
+      <Text>{EMAIL}</Text>
+      <Text>{AGE}</Text>
+      <Text>{PHONE}</Text>
+      <Text>HOLIS</Text>
+    </View>
+  );
+}
+
+/**
+ * Component for register
+ */
+function RegisterScreen({navigation}) {
   const [name, setname] = useState('');
   const [firstName, setFirstname] = useState('');
   const [lastName, setlastName] = useState('');
@@ -39,16 +65,16 @@ function LoginScreen() {
   const [password, setpassword] = useState('');
   function handleUpload() {
     const obj = {
-      NAME: name ,
-      FIRSTNAME: firstName  ,
+      NAME: name,
+      FIRSTNAME: firstName ,
       LASTNAME: lastName,
       EMAIL: email,
-      AGE: age ,
+      AGE: age,
       PHONE: phone,
       PASSWORD: password
     }
 
-   fetch("http://192.168.1.134:3000/login", {
+   fetch("http://192.168.1.134:3000/register", {
        method: 'POST',
        body: JSON.stringify({obj}),
        headers: {
@@ -58,7 +84,8 @@ function LoginScreen() {
        .then(response => response.json())
        .then(response => {
          console.log("upload succes", response);
-         alert("Upload success!");
+         alert("Registro con exito!");
+         navigation.navigate('Login');
        })
        .catch(error => {
          console.log("upload error", error);
@@ -104,11 +131,68 @@ function LoginScreen() {
      defaultValue={password}
      />
 
-     <Button title="ENVIAR REgister" onPress={handleUpload} />
+     <Button title="REGISTRARSE!" onPress={handleUpload} />
    </View>
  );
 }
 
+/**
+ * Component for login
+ */
+function LoginScreen({navigation}) {
+  const [email, setemail] = useState('');
+  const [password, setpassword] = useState('');
+  function handleUpload() {
+    const obj = {
+      EMAIL: email,
+      PASSWORD: password
+    };
+    fetch("http://192.168.1.134:3000/login", {
+      method: 'POST',
+      body: JSON.stringify({obj}),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(response => response.json())
+    .then(response => {
+      console.log("login request: ", response);
+      if(obj.PASSWORD == response[0].password){
+        console.log("contraseña correcta!");
+        navigation.navigate('Home', {NAME: response[0].name, FIRSTNAME: response[0].firstName, LASTNAME: response[0].lastName, EMAIL: response[0].email, AGE: response[0].age, PHONE: response[0].phone,});
+      }else{
+        alert("contraseña incorrecta!!");
+      }
+      console.log("Upload success!");
+    })
+    .catch(error => {
+      console.log("login error: ", error);
+      alert("Upload failed!");
+    });
+  };
+  
+  return (
+    <View style ={{padding:10}}>
+      <Text>Login</Text>
+      <TextInput style={{height:40}}
+      placeholder="mail"
+      onChangeText={email=>setemail(email)}
+      defaultValue={email}
+      />
+      <TextInput style={{height:40}}
+      placeholder="password"
+      onChangeText={password=>setpassword(password)}
+      defaultValue={password}
+      />
+      <Button title="Login" onPress={handleUpload} />
+      <Button title="No tienes cuenta? REGISTRATE!" onPress={()=> navigation.navigate('Register')} />
+    </View>
+  );
+}
+
+/**
+ * Screen for select route origin 
+ */
 function MapsScreenOrigin({navigation}) {
   const styles = StyleSheet.create({
     container: {
@@ -278,26 +362,24 @@ function RouteScreen({route}) {
 }
 
 const Stack = createStackNavigator();
-
-
 export default class App extends Component{
  
 
   render(){
     return(
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="Home">
+        <Stack.Navigator initialRouteName="Login">
           <Stack.Screen
             name="Home"
             component={HomeScreen}
-            options={{title: 'Home'}}
+            options={{title: 'Home', headerLeft: null}}
           />
-          
           <Stack.Screen name="MapOrigin" component={MapsScreenOrigin} />
           <Stack.Screen name="MapDest" component={MapsScreenDest} />
           <Stack.Screen name="Route" component={RouteScreen} />
-          
-          <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="Login" component={LoginScreen} options={{headerLeft: null}} />
+          <Stack.Screen name="Register" component={RegisterScreen} />
+          <Stack.Screen name="Prueba" component={pruebaScreen} options={{headerLeft: null}} />
         </Stack.Navigator>
       </NavigationContainer>
     );
