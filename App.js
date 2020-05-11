@@ -1,56 +1,51 @@
 import 'react-native-gesture-handler';
 import React, {Component, useState} from 'react';
-import {View, Text, Button, StyleSheet, Dimensions, TextInput} from 'react-native';
+import {View, Text, Button, StyleSheet, TextInput} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import MapViewDirections from 'react-native-maps-directions';
 import { Directions } from 'react-native-gesture-handler';
 import { set } from 'react-native-reanimated';
+import Chat from './screens/Chat';
+import FriendList from './screens/FriendList';
+import Home from './screens/Home';
 
-/**
- * Component for home Screen
- */
+/*
 function HomeScreen({route, navigation}) {
-  const {NAME, FIRSTNAME, LASTNAME, EMAIL, AGE, PHONE} = route.params;
+  const {NAME, FIRSTNAME, LASTNAME, EMAIL, AGE, PHONE, TYPE, LFRIENDS, IDGROUP} = route.params;
   console.log('Success Login for: ' + NAME + ' email: ' + EMAIL);
 
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Text>Home Screen</Text>
       <Button
-      title="Go to Maps"
-      onPress={() => navigation.navigate('MapOrigin')}
+      title="Group"
       />
       <Button
-      title="Go to Register"
-      onPress={() => navigation.navigate('Register')}
+      title="List Friends"
+      onPress={()=> navigation.navigate('ListFriends', {listFriends: LFRIENDS})}
       />
       <Button
-      title="Go to Login"
-      onPress={() => navigation.navigate('Login')}
+      title="Chat"
       />
     </View>
   );
 }
 
-/**
- * Component for prueba Screen
- */
-function pruebaScreen({route, navigation}) {
-  const {NAME, FIRSTNAME, LASTNAME, EMAIL, AGE, PHONE} = route.params;
+*/
+function ListFriendsScreen({route, navigation}) {
+  console.log("route params: ", route.params);
+  const {listFriends} = route.params;
+  var listProva = [{name: 'hola', key: 'mundo'}];
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>{NAME}</Text>
-      <Text>{FIRSTNAME}</Text>
-      <Text>{LASTNAME}</Text>
-      <Text>{EMAIL}</Text>
-      <Text>{AGE}</Text>
-      <Text>{PHONE}</Text>
-      <Text>HOLIS</Text>
+    <View>
+      
     </View>
   );
 }
+
+
 
 /**
  * Component for register
@@ -159,7 +154,7 @@ function LoginScreen({navigation}) {
       console.log("login request: ", response);
       if(obj.PASSWORD == response[0].password){
         console.log("contraseña correcta!");
-        navigation.navigate('Home', {NAME: response[0].name, FIRSTNAME: response[0].firstName, LASTNAME: response[0].lastName, EMAIL: response[0].email, AGE: response[0].age, PHONE: response[0].phone,});
+        navigation.navigate('Home', {ID: response[0].iduser, NAME: response[0].name, FIRSTNAME: response[0].firstName, LASTNAME: response[0].lastName, EMAIL: response[0].email, AGE: response[0].age, PHONE: response[0].phone, TYPE: response[0].type, LFRIENDS: response[0].listFriends, IDGROUP: response[0].idGroup,});
       }else{
         alert("contraseña incorrecta!!");
       }
@@ -361,25 +356,47 @@ function RouteScreen({route}) {
   );
 }
 
-const Stack = createStackNavigator();
-export default class App extends Component{
- 
+/**
+ * Component for prueba Screen
+ */
+function pruebaScreen({route, navigation}) {
+  
+  return (
+    <View style ={{padding:10}}>
+      <TextInput
+      autoCorrect={false}
+      onSubmitEditing={()=> this.submitChatMessage()}
+      onChangeText={chatMessage => {
+        this.setState({chatMessage});
+      }}
+      />
+    </View>
+  );
+};
 
+const Stack = createStackNavigator();
+/**
+ * HOME COMPONENT
+ */
+export default class App extends Component{
   render(){
     return(
       <NavigationContainer>
         <Stack.Navigator initialRouteName="Login">
           <Stack.Screen
             name="Home"
-            component={HomeScreen}
+            component={Home}
             options={{title: 'Home', headerLeft: null}}
           />
+          <Stack.Screen name="ListFriends" component={ListFriendsScreen} />
           <Stack.Screen name="MapOrigin" component={MapsScreenOrigin} />
           <Stack.Screen name="MapDest" component={MapsScreenDest} />
           <Stack.Screen name="Route" component={RouteScreen} />
           <Stack.Screen name="Login" component={LoginScreen} options={{headerLeft: null}} />
           <Stack.Screen name="Register" component={RegisterScreen} />
-          <Stack.Screen name="Prueba" component={pruebaScreen} options={{headerLeft: null}} />
+          <Stack.Screen name="Prueba" component={pruebaScreen} options={{headerLeft: null}}/>
+          <Stack.Screen name="Chat"  component={Chat} />
+          <Stack.Screen name="FriendList"  component={FriendList} />
         </Stack.Navigator>
       </NavigationContainer>
     );
