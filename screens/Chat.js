@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Button, View, Text, StyleSheet, TextInput } from 'react-native';
-import SocketIOClient from 'socket.io-client/dist/socket.io.js';
+import {socket} from './Home';
 
 class Chat extends Component {
   constructor(props){
@@ -11,18 +11,19 @@ class Chat extends Component {
       toSendId: "",
     };
   }
+  
   componentDidMount(){ 
-    const {route} = this.props;
+    /*const {route} = this.props;
     const {ID} = route.params;
     let userClient = ID;
-    this.socket = SocketIOClient('http://192.168.1.134:3000', {query: 'userClient='+userClient});
-    this.socket.on("chat message", msg => {
+    //this.socket = SocketIOClient('http://192.168.1.134:3000', {query: 'userClient='+userClient});*/
+    socket.on("chat message", msg => {
       this.setState({chatMessages: [...this.state.chatMessages, msg]})
     });
   }
 
   submitChatMessage(){
-    this.socket.emit('chat message', {
+    socket.emit('chat message', {
       msg: this.state.chatMessage,
       idSend: this.state.toSendId
     });
@@ -44,6 +45,7 @@ class Chat extends Component {
         position: "absolute",
       },
     });
+
 
     const {navigation, route} = this.props;
     const {ID} = route.params;

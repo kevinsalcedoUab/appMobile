@@ -5,47 +5,12 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import MapViewDirections from 'react-native-maps-directions';
-import { Directions } from 'react-native-gesture-handler';
-import { set } from 'react-native-reanimated';
+
+import {Home} from './screens/Home';
 import Chat from './screens/Chat';
 import FriendList from './screens/FriendList';
-import Home from './screens/Home';
-
-/*
-function HomeScreen({route, navigation}) {
-  const {NAME, FIRSTNAME, LASTNAME, EMAIL, AGE, PHONE, TYPE, LFRIENDS, IDGROUP} = route.params;
-  console.log('Success Login for: ' + NAME + ' email: ' + EMAIL);
-
-  return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Home Screen</Text>
-      <Button
-      title="Group"
-      />
-      <Button
-      title="List Friends"
-      onPress={()=> navigation.navigate('ListFriends', {listFriends: LFRIENDS})}
-      />
-      <Button
-      title="Chat"
-      />
-    </View>
-  );
-}
-
-*/
-function ListFriendsScreen({route, navigation}) {
-  console.log("route params: ", route.params);
-  const {listFriends} = route.params;
-  var listProva = [{name: 'hola', key: 'mundo'}];
-  return (
-    <View>
-      
-    </View>
-  );
-}
-
-
+import Group from './screens/Group';
+import prueba from './screens/prueba';
 
 /**
  * Component for register
@@ -388,7 +353,6 @@ export default class App extends Component{
             component={Home}
             options={{title: 'Home', headerLeft: null}}
           />
-          <Stack.Screen name="ListFriends" component={ListFriendsScreen} />
           <Stack.Screen name="MapOrigin" component={MapsScreenOrigin} />
           <Stack.Screen name="MapDest" component={MapsScreenDest} />
           <Stack.Screen name="Route" component={RouteScreen} />
@@ -397,6 +361,7 @@ export default class App extends Component{
           <Stack.Screen name="Prueba" component={pruebaScreen} options={{headerLeft: null}}/>
           <Stack.Screen name="Chat"  component={Chat} />
           <Stack.Screen name="FriendList"  component={FriendList} />
+          <Stack.Screen name="Group"  component={Group} />
         </Stack.Navigator>
       </NavigationContainer>
     );
