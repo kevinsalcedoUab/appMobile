@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import {socket, client} from './Home';
 import { TextInput } from 'react-native-gesture-handler';
+import _ from 'lodash';
 
 class Group extends Component {
     constructor(props){
@@ -42,9 +43,16 @@ class Group extends Component {
                 }
             }
         });
-        socket.on("update LFRIENDS", msg => {
-            console.log('update LFRIENDS: ', msg);
-            client.LFRIENDS = JSON.parse(msg);
+        socket.on("update LFRIENDS", newListFriends => {
+            console.log('update LFRIENDS: ', newListFriends);
+            if(newListFriends!= 0){
+                client.LFRIENDS = JSON.parse(newListFriends);
+            }else{
+                if(typeof(newListFriends)=='object'){
+                    client.LFRIENDS = newListFriends;
+                }
+                
+            }
         });
         
     }
@@ -58,6 +66,10 @@ class Group extends Component {
 
         //COMPONENTS FROM FRIENDLIST
         function Item({ id, title, selected, onSelect }) {
+            function clickID(idDelete){
+                client.LFRIENDS = _.reject(client.LFRIENDS, function(el) { return el.id === id; });
+                socket.emit("delete friend", {'ID': ID, 'NEWLFRIENDS': client.LFRIENDS, 'IDFRIEND': idDelete});
+            }
             
             return (
                 <View
@@ -65,7 +77,7 @@ class Group extends Component {
                     style={styles.item}
                 >
                     <Text style={styles.title}>{title}</Text>
-                    <Button title="Delete"/>
+                    <Button title="Delete" onPress={()=>clickID(id)}/>
             
                 </View>
             );
