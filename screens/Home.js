@@ -3,6 +3,7 @@ import { Button, View, Text, StyleSheet, TextInput } from 'react-native';
 import SocketIOClient from 'socket.io-client/dist/socket.io.js';
 
 var socket;
+var client = {"LFRIENDS": []};
 class Home extends Component {
     constructor(props){
         super(props);
@@ -11,10 +12,13 @@ class Home extends Component {
           chatMessages: [],
           toSendId: "",
         };
-        var {route} = props;
-        var {ID} = route.params;
+        const {route} = props;
+        const {ID} = route.params;
         let userClient = ID;
         socket = SocketIOClient('http://192.168.1.134:3000', {query: 'userClient='+userClient});
+    }
+    componentDidMount(){ 
+        
     }
 
     /**
@@ -22,8 +26,9 @@ class Home extends Component {
      */
     render(){
         const {navigation, route} = this.props;
-        const {ID, NAME, FIRSTNAME, LASTNAME, EMAIL, AGE, PHONE, TYPE, LFRIENDS, IDGROUP} = route.params;
+        const {ID, NAME, FIRSTNAME, LASTNAME, EMAIL, LFRIENDS, AGE, PHONE, TYPE, IDGROUP} = route.params;
         const requestFriend = {};
+        client.LFRIENDS = LFRIENDS;
         return(
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                 <Text>Hi</Text>
@@ -45,4 +50,4 @@ class Home extends Component {
     };
 };
 
-export {Home, socket};
+export {Home, socket, client};

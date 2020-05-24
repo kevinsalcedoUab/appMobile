@@ -119,7 +119,7 @@ function LoginScreen({navigation}) {
       console.log("login request: ", response);
       if(obj.PASSWORD == response[0].password){
         console.log("contraseña correcta!");
-        navigation.navigate('Home', {ID: response[0].iduser, NAME: response[0].name, FIRSTNAME: response[0].firstName, LASTNAME: response[0].lastName, EMAIL: response[0].email, AGE: response[0].age, PHONE: response[0].phone, TYPE: response[0].type, LFRIENDS: response[0].listFriends, IDGROUP: response[0].idGroup,});
+        navigation.navigate('Home', {ID: response[0].iduser, NAME: response[0].name, FIRSTNAME: response[0].firstName, LASTNAME: response[0].lastName, EMAIL: response[0].email, AGE: response[0].age, PHONE: response[0].phone, TYPE: response[0].type, LFRIENDS: JSON.parse(response[0].listFriends), IDGROUP: response[0].idGroup,});
       }else{
         alert("contraseña incorrecta!!");
       }
