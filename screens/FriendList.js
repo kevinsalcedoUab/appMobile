@@ -59,7 +59,7 @@ class Group extends Component {
     
 
     render(){
-        const {route} = this.props;
+        const {route, navigation} = this.props;
         const {ID, NAME, LFRIENDS, REQUESFRIEND} = route.params;
         const requestFriend= this.state.requestFriend;
         const requestFriendID= this.state.requestFriendID;
@@ -71,15 +71,20 @@ class Group extends Component {
                 socket.emit("delete friend", {'ID': ID, 'NEWLFRIENDS': client.LFRIENDS, 'IDFRIEND': idDelete});
             }
             
+            function chatToFriend(idFriend){
+                console.log("Chat with: ", idFriend);
+                navigation.navigate("Chat", {'idFriend': idFriend})
+            }
+
             return (
-                <View
-                    onPress={() => onSelect(id)}
+                <TouchableOpacity
+                    onPress={() => chatToFriend(id)}
                     style={styles.item}
                 >
                     <Text style={styles.title}>{title}</Text>
                     <Button title="Delete" onPress={()=>clickID(id)}/>
             
-                </View>
+                </TouchableOpacity>
             );
         }
         function Request(){

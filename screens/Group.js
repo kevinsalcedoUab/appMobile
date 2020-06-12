@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, View, Text, StyleSheet, TextInput } from 'react-native';
+import { Button, View, Text, StyleSheet, TextInput, Alert} from 'react-native';
 import {socket, group, client} from './Home';
 
 class Group extends Component {
@@ -29,6 +29,18 @@ class Group extends Component {
             console.log("update LMEMBERS2 --- LMEMBERS: ", group.LMEMBERS);
             group.ROUTE = newGroup.route;
             client.IDGROUP =group.IDGROUP;
+        });
+
+        socket.on("delete group", obj => {
+            console.log('delete group ID: ' + client.ID, obj);
+            alert("Your group has been deleted!");
+            group.IDGROUP = '';
+            group.LMEMBERS = '';
+            group.ROUTE = '';
+            group.NMEMBERS ='';
+            client.IDGROUP = '';
+            const {navigation}=this.props;
+            navigation.navigate("Home");
         });
     }
 
@@ -111,6 +123,25 @@ class Group extends Component {
                 );
             }
         }
+        const createTwoButtonAlert = () =>
+                Alert.alert(
+                "Delete Group",
+                "Are you sure?",
+                [
+                    {
+                    text: "Cancel",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                    },
+                    { text: "OK", onPress: () => deleteGroup() }
+                ],
+                { cancelable: false }
+                );
+
+        function deleteGroup(){
+            console.log("Delete Group Pressed!!");
+            socket.emit("delete group", {'IDGROUP': group.IDGROUP, 'LMEMBERS': group.LMEMBERS});
+        }
 
         //MAIN COMPONENT
         if(client.IDGROUP){
@@ -119,11 +150,15 @@ class Group extends Component {
                     <Text>Group</Text>
                     <Button
                     title="Route"
-                    onPress = {() => {navigation.navigate("MapOrigin")}}
+                    onPress = {() => {navigation.navigate("RouteGroup")}}
                     />
                     <Button
                     title="Members"
                     onPress = {() => {navigation.navigate("Members")}}
+                    />
+                    <Button
+                    title="Delete Group"
+                    onPress = {() => {createTwoButtonAlert()}}
                     />
                     
                 </View>

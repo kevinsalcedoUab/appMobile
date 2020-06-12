@@ -8,24 +8,21 @@ class Chat extends Component {
     this.state={
       chatMessage: "",
       chatMessages: [],
-      toSendId: "",
     };
   }
   
   componentDidMount(){ 
-    /*const {route} = this.props;
-    const {ID} = route.params;
-    let userClient = ID;
-    //this.socket = SocketIOClient('http://192.168.1.134:3000', {query: 'userClient='+userClient});*/
     socket.on("chat message", msg => {
       this.setState({chatMessages: [...this.state.chatMessages, msg]})
     });
   }
 
   submitChatMessage(){
+    const {route}=this.props;
+    const {idFriend} = route.params;
     socket.emit('chat message', {
       msg: this.state.chatMessage,
-      idSend: this.state.toSendId
+      idSend: idFriend
     });
     this.setState({chatMessages: [...this.state.chatMessages, this.state.chatMessage]})
     this.setState({chatMessage: ''});
@@ -60,14 +57,6 @@ class Chat extends Component {
           onChangeText={chatMessage => {
             this.setState({chatMessage});
           }}
-        />
-        <TextInput
-        style={{height: 40, borderWidth: 2, top: 20}}
-        autoCorrect={false}
-        value={this.state.toSendId}
-        onChangeText={toSendId =>{
-          this.setState({toSendId});
-        }}  
         />
       </View>
    );

@@ -76,21 +76,25 @@ class Members extends Component {
 
     render(){
         //COMPONENTS FROM MEMBERS
+        const {navigation} = this.props;
         function Item({ id, title, selected, onSelect }) {
             function clickID(idDelete){
                 group.LMEMBERS = _.reject(group.LMEMBERS, function(el) { return el.id === id; });
                 socket.emit("delete member", {'ID': client.ID, 'IDGROUP': group.IDGROUP, 'NEWLMEMBER': group.LMEMBERS, 'IDMEMBER': idDelete});
             }
-            
+            function chatToFriend(idFriend){
+                console.log("Chat with: ", idFriend);
+                navigation.navigate("Chat", {'idFriend': idFriend})
+            }
             return (
-                <View
-                    onPress={() => onSelect(id)}
+                <TouchableOpacity
+                    onPress={() => chatToFriend(id)}
                     style={styles.item}
                 >
                     <Text style={styles.title}>{title}</Text>
                     <Button title="Delete" onPress={()=>clickID(id)}/>
             
-                </View>
+                </TouchableOpacity>
             );
         }
         

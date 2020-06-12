@@ -12,6 +12,7 @@ import FriendList from './screens/FriendList';
 import Group from './screens/Group';
 import prueba from './screens/prueba';
 import Members from './screens/Members';
+import RouteGroup from './screens/RouteGroup';
 
 /**
  * Component for register
@@ -279,11 +280,6 @@ function RouteScreen({route, navigation}) {
       })
         .then(response => response.json())
         .then(response => {
-          //console.log("upload route succes", typeof(response));
-          //console.log("idGroup: ", response.json[0].idGroup);
-          //console.log("listMembers: ", response.json[0].listMembers);
-          //console.log("nMembers: ", response.json[0].nMembers);
-          //console.log("route: ", response.json[0].route);
           alert("Route has been created successfully!");
           group.IDGROUP = response.json[0].idGroup;
           group.LMEMBERS = JSON.parse(response.json[0].listMembers);
@@ -379,6 +375,7 @@ export default class App extends Component{
           <Stack.Screen name="FriendList"  component={FriendList} />
           <Stack.Screen name="Group"  component={Group} />
           <Stack.Screen name="Members"  component={Members} />
+          <Stack.Screen name="RouteGroup"  component={RouteGroup} />
         </Stack.Navigator>
       </NavigationContainer>
     );
