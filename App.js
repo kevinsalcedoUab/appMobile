@@ -6,11 +6,12 @@ import {createStackNavigator} from '@react-navigation/stack';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import MapViewDirections from 'react-native-maps-directions';
 
-import {Home} from './screens/Home';
+import {Home, group, client} from './screens/Home';
 import Chat from './screens/Chat';
 import FriendList from './screens/FriendList';
 import Group from './screens/Group';
 import prueba from './screens/prueba';
+import Members from './screens/Members';
 
 /**
  * Component for register
@@ -144,8 +145,8 @@ function LoginScreen({navigation}) {
       onChangeText={password=>setpassword(password)}
       defaultValue={password}
       />
-      <Button title="Login" onPress={handleUpload} />
-      <Button title="No tienes cuenta? REGISTRATE!" onPress={()=> navigation.navigate('Register')} />
+      <Button title="Sign In" onPress={handleUpload} />
+      <Button title="Sign Up" onPress={()=> navigation.navigate('Register')} />
     </View>
   );
 }
@@ -235,7 +236,7 @@ function MapsScreenDest({route, navigation}) {
  * ROUTE
  * 
  */
-function RouteScreen({route}) {
+function RouteScreen({route, navigation}) {
   const {Orlatitude, Orlongitude, Dlatitude, Dlongitude} = route.params;
   const or_latitude =  parseFloat(JSON.stringify(Orlatitude));
   const or_longitude =  parseFloat(JSON.stringify(Orlongitude));
@@ -271,15 +272,30 @@ function RouteScreen({route}) {
   function ConfirmRoute() {
     fetch("http://192.168.1.134:3000/route", {
         method: 'POST',
-        body: JSON.stringify({OR_latitude: or_latitude, OR_longitude: or_longitude, DT_latitude: dt_latitude, DT_longitude: dt_longitude}),
+        body: JSON.stringify({'ID': client.ID, 'NAME': client.NAME , OR_latitude: or_latitude, OR_longitude: or_longitude, DT_latitude: dt_latitude, DT_longitude: dt_longitude}),
         headers: {
           'Content-Type': 'application/json'
         }
       })
         .then(response => response.json())
         .then(response => {
-          console.log("upload succes", response);
-          alert("Upload success!");
+          //console.log("upload route succes", typeof(response));
+          //console.log("idGroup: ", response.json[0].idGroup);
+          //console.log("listMembers: ", response.json[0].listMembers);
+          //console.log("nMembers: ", response.json[0].nMembers);
+          //console.log("route: ", response.json[0].route);
+          alert("Route has been created successfully!");
+          group.IDGROUP = response.json[0].idGroup;
+          group.LMEMBERS = JSON.parse(response.json[0].listMembers);
+          group.NMEMBERS = response.json[0].nMembers;
+          group.ROUTE = JSON.parse(response.json[0].route);
+          client.IDGROUP = group.IDGROUP;
+          console.log("upload route succes", response);
+          console.log("idGroup: ", typeof(group.IDGROUP), group.IDGROUP);
+          console.log("listMembers: ", typeof(group.LMEMBERS), group.LMEMBERS);
+          console.log("nMembers: ", typeof(group.NMEMBERS), group.NMEMBERS);
+          console.log("route: ", typeof(group.ROUTE), group.ROUTE);
+          navigation.navigate('Home');
         })
         .catch(error => {
           console.log("upload error", error);
@@ -362,6 +378,7 @@ export default class App extends Component{
           <Stack.Screen name="Chat"  component={Chat} />
           <Stack.Screen name="FriendList"  component={FriendList} />
           <Stack.Screen name="Group"  component={Group} />
+          <Stack.Screen name="Members"  component={Members} />
         </Stack.Navigator>
       </NavigationContainer>
     );
