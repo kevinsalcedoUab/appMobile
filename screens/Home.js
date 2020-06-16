@@ -1,6 +1,27 @@
 import React, { Component } from 'react';
-import { Button, View, Text, StyleSheet, TextInput } from 'react-native';
+import { Button, View, Text, StyleSheet, TextInput, PermissionsAndroid } from 'react-native';
 import SocketIOClient from 'socket.io-client/dist/socket.io.js';
+
+export async function requestCameraPermission() {
+    try {
+        const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        {
+            title: "App Location Permission",
+            message:
+            "App needs access to your location ",
+        }
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+            console.log("You can use the location");
+            //navigation.navigate("RouteGroup");
+        } else {
+            console.log("Location permission denied");
+        }
+    } catch (err) {
+          console.warn(err);
+    }
+};   
 
 var socket;
 var client = {
@@ -35,8 +56,8 @@ class Home extends Component {
         let userClient = ID;
         socket = SocketIOClient('http://192.168.1.134:3000', {query: 'userClient='+userClient});
     }
-    componentDidMount(){ 
-        
+    async componentDidMount(){ 
+        await requestCameraPermission();
     }
 
     /**
@@ -93,10 +114,6 @@ class Home extends Component {
                 <Button
                 title="FriendList"
                 onPress={()=> navigation.navigate("FriendList", {'ID': ID, 'NAME': NAME, 'LFRIENDS': LFRIENDS , 'REQUESFRIEND': requestFriend})}
-                />
-                <Button
-                title="Chat"
-                onPress={() => navigation.navigate("Chat", {'ID': ID})}
                 />
             </View>
         );

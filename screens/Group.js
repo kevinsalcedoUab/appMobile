@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import { Button, View, Text, StyleSheet, TextInput, Alert} from 'react-native';
+import { Button, View, Text, StyleSheet, TextInput, Alert, PermissionsAndroid} from 'react-native';
 import {socket, group, client} from './Home';
+
+
 
 class Group extends Component {
     constructor(props){
@@ -44,6 +46,7 @@ class Group extends Component {
         });
     }
 
+   
     render(){
         const {navigation, route} = this.props;
         const requestMember= this.state.requestMember;
@@ -143,6 +146,35 @@ class Group extends Component {
             socket.emit("delete group", {'IDGROUP': group.IDGROUP, 'LMEMBERS': group.LMEMBERS});
         }
 
+        /*
+        onPress = () => {
+            async function requestCameraPermission() {
+                try {
+                  const granted = await PermissionsAndroid.request(
+                    PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+                    {
+                      title: "App Location Permission",
+                      message:
+                        "App needs access to your location ",
+                      buttonNeutral: "Ask Me Later",
+                      buttonNegative: "Cancel",
+                      buttonPositive: "OK"
+                    }
+                  );
+                  if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                    console.log("You can use the location");
+                    navigation.navigate("RouteGroup");
+                  } else {
+                    console.log("Location permission denied");
+                  }
+                } catch (err) {
+                  console.warn(err);
+                }
+            };    
+            requestCameraPermission();
+        };*/
+        
+
         //MAIN COMPONENT
         if(client.IDGROUP){
             return(
@@ -155,6 +187,9 @@ class Group extends Component {
                     <Button
                     title="Members"
                     onPress = {() => {navigation.navigate("Members")}}
+                    />
+                    <Button
+                    title="Members Location"
                     />
                     <Button
                     title="Delete Group"

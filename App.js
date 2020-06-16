@@ -166,7 +166,7 @@ function MapsScreenOrigin({navigation}) {
       height: '100%'
     },
   });
-  const [origins, setOrigins] = useState({latitude: 41.5001101, longitude: 2.1092682});
+  const [origins, setOrigins] = useState({latitude: 37.42199833, longitude: -122.084000});
   return (
     <View>
       <Button title="origen"
@@ -204,7 +204,7 @@ function MapsScreenDest({route, navigation}) {
       height: '100%'
     },
   });
-  const [destinations, setDestination] = useState({latitude: 41.5001101, longitude: 2.1092682});
+  const [destinations, setDestination] = useState({latitude: 37.42199833, longitude: -122.084000});
   const {Olatitude, Olongitude} = route.params;
   const or_latitude = parseFloat(JSON.stringify(Olatitude));
   const or_longitude = parseFloat(JSON.stringify(Olongitude));
